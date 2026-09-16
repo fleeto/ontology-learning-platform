@@ -72,7 +72,7 @@ export function Sidebar() {
         {collapsed ? '→' : '←'}
       </button>
 
-      <nav className="h-full overflow-y-auto px-2 py-4">
+      <nav className="h-full overflow-hidden px-2 py-4">
         {navSections.map((section) => (
           <div key={section.label} className="mb-4">
             {!collapsed && (
@@ -85,15 +85,12 @@ export function Sidebar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-gray-800 ${collapsed ? 'justify-center' : ''}`}
+                    className={`group flex h-8 items-center gap-2.5 rounded-lg px-3 text-sm transition-colors hover:bg-gray-800 ${collapsed ? 'justify-center' : ''}`}
                     title={collapsed ? item.label : undefined}
                   >
                     <span className="flex-shrink-0 text-base">{item.icon}</span>
                     {!collapsed && (
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate font-medium text-gray-300 group-hover:text-white">{item.label}</div>
-                        <div className="truncate text-xs text-gray-600 group-hover:text-gray-400">{item.desc}</div>
-                      </div>
+                      <div className="min-w-0 flex-1 truncate font-medium text-gray-300 group-hover:text-white">{item.label}</div>
                     )}
                   </Link>
                 </li>
