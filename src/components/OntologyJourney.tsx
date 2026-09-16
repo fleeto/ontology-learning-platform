@@ -70,6 +70,11 @@ export default function OntologyJourney({ onStageChange }: { onStageChange: (nod
           <span className="text-xs text-gray-500">初始库存 300 kg · 每日消耗 100 kg · 单一原料 / 产品模型</span>
         </div>
       </div>
+      <div className="grid gap-3 border-b border-gray-800 p-4 text-sm md:grid-cols-3">
+        <div><h3 className="font-semibold text-blue-300">类型：定义共同的业务语言</h3><p className="mt-1 leading-6 text-gray-400">RawMaterial 定义原料的属性与主键。下方图谱展示对象类型，记录数为示例规模，不是本次运行创建的实例。</p></div>
+        <div><h3 className="font-semibold text-blue-300">实例：用稳定 ID 关联记录</h3><p className="mt-1 leading-6 text-gray-400">RM-001 是一种具体原料；通过供应商与 BOM 的关联，找到受影响产品 PROD-001。连线表示业务关系，粒子仅作关系遍历示意。</p></div>
+        <div><h3 className="font-semibold text-blue-300">操作：受约束的业务变更</h3><p className="mt-1 leading-6 text-gray-400">补货缺口是规则计算的建议；审批后才生成采购单。采购单已创建与库存已到货是不同状态。</p></div>
+      </div>
       <ol className="grid grid-cols-2 gap-2 p-4 md:grid-cols-3 xl:grid-cols-6" aria-label="端到端进度">
         {stages.map((item, index) => <li key={item.title} aria-current={step === index ? 'step' : undefined} className={`rounded-lg border p-3 ${step === index ? 'border-blue-500 bg-blue-950/60' : index < step ? 'border-emerald-900 bg-emerald-950/20' : 'border-gray-800'}`}><span className={`text-xs ${index < step ? 'text-emerald-400' : 'text-blue-300'}`}>{index < step ? '✓ 已通过' : `0${index + 1}`}</span><p className="mt-1 text-sm font-medium">{item.title}</p><p className="mt-1 text-xs text-gray-500">{item.subtitle}</p></li>)}
       </ol>

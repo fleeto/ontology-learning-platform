@@ -97,12 +97,13 @@ export default function OntologyExplorerPage() {
 
   // Pulse animation for path nodes
   useEffect(() => {
-    if (highlightedPath.length === 0) return;
+    if (highlightedPath.length === 0) { setPulseNodes(new Set()); return; }
+    let pulseTimer: ReturnType<typeof setTimeout>;
     const interval = setInterval(() => {
       setPulseNodes(new Set(highlightedPath));
-      setTimeout(() => setPulseNodes(new Set()), 600);
+      pulseTimer = setTimeout(() => setPulseNodes(new Set()), 600);
     }, 1200);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); clearTimeout(pulseTimer); };
   }, [highlightedPath]);
 
   const getNodePosition = useCallback((objectId: string) => {
@@ -285,6 +286,11 @@ export default function OntologyExplorerPage() {
                     key={obj.id}
                     className="cursor-pointer"
                     style={{ opacity: dimmed ? 0.25 : 1, transition: 'opacity 0.3s' }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`查看对象类型 ${obj.name}`}
+                    aria-pressed={selectedNode === obj.id}
+                    onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleNodeClick(obj.id); } }}
                     onClick={() => handleNodeClick(obj.id)}
                     onMouseEnter={() => setHoveredNode(obj.id)}
                     onMouseLeave={() => setHoveredNode(null)}

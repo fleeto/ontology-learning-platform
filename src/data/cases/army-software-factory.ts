@@ -169,7 +169,7 @@ export const armySoftwareFactoryCase: CaseStudy = {
       nodes: ['approval-gate', 'change-request'],
       requiresApproval: true,
       input: (p, r) => ({ changeRequests: r.changes, passRate: `${r.passRate}%` }),
-      output: () => ({ gate: 'APPROVAL-GATE-DEMO', status: '等待人工放行' }),
+      output: () => ({ gate: 'APPROVAL-GATE-DEMO', purpose: '由授权审批人确认变更' }),
       narrativeNote: () => 'Agent 起草、测试验证、人工放行——三者分离，任何一方都不能单独把变更推到生产。',
     },
     {

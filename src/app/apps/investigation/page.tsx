@@ -17,8 +17,8 @@ const mockInstances: InstanceRecord[] = [
     id: 'sup-001', name: 'Acme Polymer Inc.', objectType: 'supplier',
     properties: { reliabilityScore: '34', region: 'Southeast Asia', status: 'Disrupted', lastDelivery: '2024-01-15' },
     relations: [
-      { targetId: 'rm-001', linkName: 'suppliedBy', direction: 'out' },
-      { targetId: 'rm-002', linkName: 'suppliedBy', direction: 'out' },
+      { targetId: 'rm-001', linkName: 'suppliedBy', direction: 'in' },
+      { targetId: 'rm-002', linkName: 'suppliedBy', direction: 'in' },
       { targetId: 'sd-001', linkName: 'disruptedBy', direction: 'in' },
     ],
   },
@@ -26,7 +26,7 @@ const mockInstances: InstanceRecord[] = [
     id: 'rm-001', name: 'Medical Grade Silicone', objectType: 'raw-material',
     properties: { category: 'Polymer', unit: 'kg', stockLevel: '1,240', minThreshold: '500' },
     relations: [
-      { targetId: 'sup-001', linkName: 'suppliedBy', direction: 'in' },
+      { targetId: 'sup-001', linkName: 'suppliedBy', direction: 'out' },
       { targetId: 'bom-001', linkName: 'contains', direction: 'out' },
       { targetId: 'bom-002', linkName: 'contains', direction: 'out' },
     ],
@@ -35,7 +35,7 @@ const mockInstances: InstanceRecord[] = [
     id: 'rm-002', name: 'Titanium Alloy Ti-6Al-4V', objectType: 'raw-material',
     properties: { category: 'Metal', unit: 'kg', stockLevel: '890', minThreshold: '200' },
     relations: [
-      { targetId: 'sup-001', linkName: 'suppliedBy', direction: 'in' },
+      { targetId: 'sup-001', linkName: 'suppliedBy', direction: 'out' },
       { targetId: 'bom-003', linkName: 'contains', direction: 'out' },
     ],
   },

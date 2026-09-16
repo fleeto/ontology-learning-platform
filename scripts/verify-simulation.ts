@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import { initialSimulationState, simulationReducer as reduce } from '../src/lib/simulation-state';
+
+let state = { ...initialSimulationState };
+const advance = (requiresApproval = false) => { state = reduce(state, { type: 'next', requiresApproval, lastStep: 5 }); };
+advance(); advance(); advance();
+assert.equal(state.step, 3);
+advance(true);
+assert.equal(state.step, 3, 'cannot bypass approval');
+state = reduce(state, { type: 'approve', requiresApproval: true });
+advance(true);
+assert.equal(state.step, 4);
+assert.equal(state.approved, false, 'approval cannot authorize another stage');
+advance(true);
+assert.equal(state.step, 4, 'a second gate needs its own approval');
+state = reduce(state, { type: 'approve', requiresApproval: true });
+advance(true);
+assert.equal(state.step, 5);
+advance();
+assert.equal(state.step, 5, 'cannot advance beyond final stage');
+state = reduce(state, { type: 'reset' });
+assert.deepEqual(state, initialSimulationState, 'new parameters invalidate progress and approval');
+state = reduce(state, { type: 'play', requiresApproval: false, lastStep: 5 });
+assert.equal(state.playing, true);
+state = reduce(state, { type: 'reset' });
+assert.equal(state.playing, false, 'reset also stops auto-play');
+console.log('✓ Approval gates, separate approvals, terminal stage and parameter reset verified');
+
+import { getLinkPath, getPointOnPath } from '../src/lib/graph-geometry';
+import { linkTypes } from '../src/data/ontology-model';
+assert.deepEqual(getPointOnPath(getLinkPath({ x: -10, y: -20 }, { x: 20, y: 40 }).path, 0), { x: -10, y: -20 });
+const suppliedBy = linkTypes.find(link => link.name === 'suppliedBy')!;
+assert.equal(suppliedBy.sourceObject, 'raw-material');
+assert.equal(suppliedBy.targetObject, 'supplier');
+console.log('✓ Signed graph coordinates and suppliedBy semantics verified');

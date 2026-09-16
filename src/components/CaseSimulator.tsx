@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import Link from 'next/link';
+import { initialSimulationState, simulationReducer } from '@/lib/simulation-state';
 import type { CaseStudy, CaseParams, CaseResult } from '@/data/cases/types';
 import {
   getDefaultPosition,
@@ -31,11 +32,8 @@ function defaultParams(caseStudy: CaseStudy): CaseParams {
 }
 
 export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
-  const [step, setStep] = useState(0);
+  const [{ step, playing, started, approved }, dispatch] = useReducer(simulationReducer, initialSimulationState);
   const [params, setParams] = useState<CaseParams>(() => defaultParams(caseStudy));
-  const [playing, setPlaying] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [approved, setApproved] = useState(false);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [searchFrom, setSearchFrom] = useState<string | null>(null);
@@ -61,7 +59,8 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
   const stageNodes = useMemo(() => new Set(stage.nodes), [stage]);
 
   const reset = useCallback(() => {
-    setStep(0); setPlaying(false); setStarted(false); setApproved(false);
+    dispatch({ type: 'reset' });
+    setParticles([]); setPulseNodes(new Set());
     setHighlightedPath([]); setSelectedNode(null); setSearchFrom(null); setSearchTo(null);
     setAuditLog([]); setAnimatingFlow(false);
   }, []);
@@ -79,9 +78,9 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
   // Auto-play timer.
   useEffect(() => {
     if (!playing) return;
-    if (stage.requiresApproval && !approved) { setPlaying(false); return; }
-    if (step === caseStudy.stages.length - 1) { setPlaying(false); return; }
-    const timer = setTimeout(() => setStep(s => s + 1), 2400);
+    if (stage.requiresApproval && !approved) { dispatch({ type: 'pause' }); setAnimatingFlow(false); return; }
+    if (step === caseStudy.stages.length - 1) { dispatch({ type: 'pause' }); setAnimatingFlow(false); return; }
+    const timer = setTimeout(() => dispatch({ type: 'next', requiresApproval: !!stage.requiresApproval, lastStep: caseStudy.stages.length - 1 }), 2400);
     return () => clearTimeout(timer);
   }, [playing, step, stage.requiresApproval, approved, caseStudy.stages.length]);
 
@@ -117,12 +116,13 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
 
   // Pulse along the traced path.
   useEffect(() => {
-    if (highlightedPath.length === 0) return;
+    if (highlightedPath.length === 0) { setPulseNodes(new Set()); return; }
+    let pulseTimer: ReturnType<typeof setTimeout>;
     const interval = setInterval(() => {
       setPulseNodes(new Set(highlightedPath));
-      setTimeout(() => setPulseNodes(new Set()), 600);
+      pulseTimer = setTimeout(() => setPulseNodes(new Set()), 600);
     }, 1200);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); clearTimeout(pulseTimer); };
   }, [highlightedPath]);
 
   const getNodePosition = useCallback(
@@ -144,7 +144,7 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
         searchTo,
       );
       setHighlightedPath(path);
-      appendAudit(`追踪路径 ${path.length - 1} 跳：${path.join(' → ')}`);
+      appendAudit(`追踪路径 ${Math.max(0, path.length - 1)} 跳：${path.length ? path.join(' → ') : '无可达路径'}`);
     }
   };
 
@@ -161,19 +161,16 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
 
   const handleParamChange = (id: string, value: number | string | boolean) => {
     setParams(prev => ({ ...prev, [id]: value }));
-    setApproved(false);
-    appendAudit(`参数调整 ${id} = ${String(value)}`);
+    reset();
+    appendAudit(`参数调整 ${id} = ${String(value)}；流程已重置，需重新计算与审批`);
   };
 
   const goNext = () => {
-    setStarted(true);
-    const next = caseStudy.stages[step];
-    if (next.requiresApproval) appendAudit(`进入审批卡点：${next.title}`);
-    if (step < caseStudy.stages.length - 1) setStep(step + 1);
+    dispatch({ type: 'next', requiresApproval: !!stage.requiresApproval, lastStep: caseStudy.stages.length - 1 });
   };
 
   const handleApprove = () => {
-    setApproved(true);
+    dispatch({ type: 'approve', requiresApproval: !!stage.requiresApproval });
     appendAudit(`人工审批通过：${stage.title}`);
   };
 
@@ -194,7 +191,9 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
 
   const awaitingApproval = stage.requiresApproval && !approved;
   const inputValue = stage.input(params, result);
-  const outputValue = stage.output(params, result);
+  const outputValue = stage.requiresApproval
+    ? { approvalStatus: approved ? '已人工确认（模拟）' : '等待人工审批，尚未执行', proposedOutput: stage.output(params, result) }
+    : stage.output(params, result);
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -264,7 +263,7 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
                 {stage.subtitle && <span className="ml-2 text-xs font-normal text-gray-500">{stage.subtitle}</span>}
               </h3>
               <span role="status" className={`text-xs ${awaitingApproval ? 'text-amber-300' : step === caseStudy.stages.length - 1 ? 'text-emerald-300' : playing ? 'text-blue-300' : 'text-gray-400'}`}>
-                {awaitingApproval ? '等待人工审批 · 自动演示已暂停' : step === caseStudy.stages.length - 1 ? '流程完成' : playing ? '正在演示' : '可单步查看'}
+                {awaitingApproval ? '等待人工审批 · 自动演示已暂停' : step === caseStudy.stages.length - 1 && !awaitingApproval ? '流程完成' : playing ? '正在演示' : '可单步查看'}
               </span>
             </div>
 
@@ -330,7 +329,7 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
               <button
                 className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"
                 disabled={awaitingApproval || step === caseStudy.stages.length - 1}
-                onClick={() => { setStarted(true); setPlaying(!playing); setAnimatingFlow(!playing); }}
+                onClick={() => { dispatch({ type: 'play', requiresApproval: !!stage.requiresApproval, lastStep: caseStudy.stages.length - 1 }); setAnimatingFlow(!playing); }}
               >
                 {playing ? '⏸ 暂停演示' : '▶ 自动演示'}
               </button>
@@ -452,6 +451,11 @@ export default function CaseSimulator({ caseStudy }: { caseStudy: CaseStudy }) {
                     key={obj.id}
                     className="cursor-pointer"
                     style={{ opacity: dimmed ? 0.25 : 1, transition: 'opacity 0.3s' }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`查看对象类型 ${obj.name}`}
+                    aria-pressed={selectedNode === obj.id}
+                    onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleNodeClick(obj.id); } }}
                     onClick={() => handleNodeClick(obj.id)}
                     onMouseEnter={() => setHoveredNode(obj.id)}
                     onMouseLeave={() => setHoveredNode(null)}

@@ -42,3 +42,6 @@ next-env.d.ts
 # Build
 *.log
 npm-debug.log*
+
+# LoopX process locks are ephemeral
+.loopx/*.lock

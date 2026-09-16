@@ -31,8 +31,8 @@ export function getLinkPath(
   const dx = target.x - source.x;
   const dy = target.y - source.y;
   const len = Math.sqrt(dx * dx + dy * dy) || 1;
-  const cx = midX + (-dy / len) * offset;
-  const cy = midY + (dx / len) * offset;
+  const cx = Math.round((midX + (-dy / len) * offset) * 1000) / 1000;
+  const cy = Math.round((midY + (dx / len) * offset) * 1000) / 1000;
   return {
     path: `M ${source.x} ${source.y} Q ${cx} ${cy} ${target.x} ${target.y}`,
     cx,
@@ -41,13 +41,14 @@ export function getLinkPath(
 }
 
 export function getPointOnPath(path: string, progress: number): NodePosition {
-  const parts = path.match(/M ([\d.]+) ([\d.]+) Q ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)/);
+  const parts = path.match(/M (-?[\d.]+) (-?[\d.]+) Q (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+)/);
   if (!parts) return { x: 0, y: 0 };
   const [, x1, y1, cx, cy, x2, y2] = parts.map(Number);
   const t = progress;
   const x = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * cx + t * t * x2;
   const y = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cy + t * t * y2;
-  return { x, y };
+  // Stable SVG attributes across server/browser floating-point implementations.
+  return { x: Math.round(x * 1000) / 1000, y: Math.round(y * 1000) / 1000 };
 }
 
 // Breadth-first shortest path over an undirected graph defined by link endpoints.

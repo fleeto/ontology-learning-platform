@@ -215,9 +215,9 @@ export const linkTypes: LinkType[] = [
   {
     id: 'supplied-by',
     name: 'suppliedBy',
-    description: '供应商供应原材料',
-    sourceObject: 'supplier',
-    targetObject: 'raw-material',
+    description: '原材料由供应商供应',
+    sourceObject: 'raw-material',
+    targetObject: 'supplier',
     cardinality: 'many-to-many',
     properties: [
       { name: 'unitCost', type: 'Double', description: '单位成本' },

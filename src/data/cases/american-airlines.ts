@@ -189,7 +189,7 @@ export const americanAirlinesCase: CaseStudy = {
       nodes: ['recovery', 'delay-event'],
       requiresApproval: true,
       input: (p, r) => ({ action: 'Rebook Passengers + Swap Aircraft', affectedPassengers: r.affectedPassengers }),
-      output: (p, r) => ({ status: '等待人工审批', estimatedImpact: `${r.affectedPassengers} 名旅客` }),
+      output: (p, r) => ({ purpose: '由授权审批人确认恢复方案', estimatedImpact: `${r.affectedPassengers} 名旅客` }),
       narrativeNote: () => 'Agent 可以起草方案，但改签与换机这类改变运行状态的 Action 必须人工放行。',
     },
     {
