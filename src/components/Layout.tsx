@@ -29,6 +29,15 @@ const navSections = [
       { href: '/apps/investigation', label: 'Investigation', icon: '🔍', desc: '实例探索查询' },
     ],
   },
+  {
+    label: '真实案例',
+    items: [
+      { href: '/cases', label: '案例库', icon: '📚', desc: '2026 本体落地案例' },
+      { href: '/cases/american-airlines', label: '航网运营恢复', icon: '✈️', desc: 'American Airlines' },
+      { href: '/cases/army-software-factory', label: '软件工厂交付', icon: '🎖️', desc: '陆军 + Agentik' },
+      { href: '/cases/document-graph', label: '文档知识图谱', icon: '📄', desc: '4000 万文档结构化' },
+    ],
+  },
 ];
 
 export function TopBar() {

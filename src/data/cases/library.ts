@@ -1,0 +1,313 @@
+// Single source of truth for the real-world case library.
+// Consumed by app/cases/page.tsx (web cards) and scripts/gen-case-library.ts
+// (textbook/案例库.md). Do not hand-write copies elsewhere.
+
+import type { LibraryEntry } from './types';
+
+export const interactiveCases: { slug: string; name: string; industry: string; scenario: string }[] = [
+  {
+    slug: 'american-airlines',
+    name: 'American Airlines',
+    industry: '航空运输',
+    scenario: 'Ontology 驱动的 AI 网络规划与运营优化',
+  },
+  {
+    slug: 'army-software-factory',
+    name: 'U.S. Army Software Factory',
+    industry: '国防 / 软件交付',
+    scenario: 'Ontology + Agentik 辅助软件交付，周期从「数月」缩短到「数天」',
+  },
+  {
+    slug: 'document-graph',
+    name: '大规模文档知识图谱',
+    industry: '非结构化数据 / AI',
+    scenario: '4000 万份文档结构化为 9.29 亿条边的代理式知识图谱',
+  },
+];
+
+export const caseLibrary: LibraryEntry[] = [
+  // ── AIPCon 11（2026-09-10）登台客户 ──
+  {
+    id: 'acrisure',
+    customer: 'Acrisure',
+    industry: '保险 / 金融科技',
+    scenario: '客户情报、运营与决策优化',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'cisco',
+    customer: 'Cisco',
+    industry: '技术 / 通信',
+    scenario: '企业级数据整合，支撑 AI 工作流与决策',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'eaton',
+    customer: 'Eaton',
+    industry: '工业 / 能源管理',
+    scenario: '供应链优化、运营可视化',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'faa',
+    customer: 'Federal Aviation Administration（FAA）',
+    industry: '政府 / 航空监管',
+    scenario: '高合规性环境下的 AI 与数据应用',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'hexion',
+    customer: 'Hexion',
+    industry: '化工 / 材料',
+    scenario: '数据整合与运营优化',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'l3harris',
+    customer: 'L3Harris',
+    industry: '国防 / 航空通信',
+    scenario: '政府与国防环境下的软件部署与任务管理',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'nvidia',
+    customer: 'NVIDIA',
+    industry: '半导体 / AI',
+    scenario: '大规模 AI 运营与数据整合',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'ondas-sentinel',
+    customer: 'Ondas Sentinel',
+    industry: '无线通信 / 传感分析',
+    scenario: '数据驱动的监控与分析',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'usa-today',
+    customer: 'USA TODAY',
+    industry: '媒体 / 新闻',
+    scenario: '受控环境中数据驱动的内容与运营',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+  {
+    id: 'zeta-global',
+    customer: 'Zeta Global',
+    industry: '广告 / 营销科技',
+    scenario: '客户情报、市场营销与收入工作流',
+    source: 'Palantir 新闻稿《Customers Set New Standard for AI at AIPCon 11》',
+    sourceDate: '2026-09-10',
+    group: 'aipcon-11',
+    fidelity: 'fact',
+  },
+
+  // ── AIPCon 10（2026-06-04）首次公开首发的生产案例 ──
+  {
+    id: 'kirkland-ellis',
+    customer: 'Kirkland & Ellis',
+    industry: '法律',
+    scenario: '法律 AI 的生产部署',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+  {
+    id: 'mccarthy',
+    customer: 'McCarthy Building Companies',
+    industry: '建筑工程',
+    scenario: '建筑承包商的生产用例首次公开',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+  {
+    id: 'usda',
+    customer: 'U.S. Department of Agriculture（美国农业部）',
+    industry: '政府',
+    scenario: '政府场景的生产用例首次公开',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+  {
+    id: 'hertz',
+    customer: 'Hertz',
+    industry: '出行 / 租车',
+    scenario: '出行行业的生产用例首次公开',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+  {
+    id: 'nscale',
+    customer: 'Nscale',
+    industry: 'AI 云服务基础设施',
+    scenario: 'AI 云服务基础设施的生产部署',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+  {
+    id: 'accenture',
+    customer: 'Accenture（埃森哲）',
+    industry: '咨询',
+    scenario: '内部部署实践的首次公开',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+  {
+    id: 'parts-town',
+    customer: 'Parts Town',
+    industry: '工业零件分销电商',
+    scenario: '工业零件分销电商的生产用例',
+    source: 'Palantir 投资者关系新闻稿（AIPCon 10）',
+    sourceDate: '2026-06-04',
+    group: 'aipcon-10',
+    fidelity: 'fact',
+  },
+
+  // ── Palantir 官方博客《Connecting Agents to Decisions》(2026) 真实世界案例 ──
+  {
+    id: 'american-airlines',
+    customer: 'American Airlines（美国航空）',
+    industry: '航空运输',
+    scenario: '用 Ontology 驱动 AI 支持的网络规划与运营优化',
+    source: 'Palantir 官方博客《Connecting Agents to Decisions》(2026) 真实世界案例',
+    sourceDate: '2026',
+    group: 'blog-2026',
+    fidelity: 'fact',
+    interactiveSlug: 'american-airlines',
+  },
+  {
+    id: 'army-software-factory',
+    customer: 'U.S. Army Software Factory（美国陆军软件工厂）',
+    industry: '国防 / 软件交付',
+    scenario: '借助 Ontology / Agentik，软件交付周期从「数月」缩短到「数天」',
+    source: 'Palantir 官方博客《Connecting Agents to Decisions》(2026) 真实世界案例',
+    sourceDate: '2026',
+    group: 'blog-2026',
+    fidelity: 'official-claim',
+    note: '「数月→数天」为官方描述性进展，非量化指标',
+    interactiveSlug: 'army-software-factory',
+  },
+  {
+    id: 'novartis',
+    customer: 'Novartis（诺华制药）',
+    industry: '制药 / 生命科学',
+    scenario: '代理式研发（agentic R&D）变革药物发现与开发',
+    source: 'Palantir 官方博客《Connecting Agents to Decisions》(2026) 真实世界案例',
+    sourceDate: '2026',
+    group: 'blog-2026',
+    fidelity: 'fact',
+  },
+  {
+    id: 'andretti-global',
+    customer: 'Andretti Global',
+    industry: '赛车 / IndyCar',
+    scenario: 'IndyCar 赛事运营中的人机协作（human-agent teaming）',
+    source: 'Palantir 官方博客《Connecting Agents to Decisions》(2026) 真实世界案例',
+    sourceDate: '2026',
+    group: 'blog-2026',
+    fidelity: 'fact',
+  },
+
+  // ── 合作项目：网络安全本体 ──
+  {
+    id: 'method-security-cardinal',
+    customer: 'Method Security × Palantir（Cardinal Program）',
+    industry: '网络安全 / 关键基础设施',
+    scenario: 'Ontology for Cybersecurity + Foundry + AIP：将安全评估发现关联为「真实任务影响」的语义上下文，面向市政、公用事业与关键基础设施运营商提供免费持续的安全评估',
+    source: 'Method Security 与 Palantir 正式新闻稿（businesswire / 投资者关系）',
+    sourceDate: '2026-09-10',
+    group: 'partnership',
+    fidelity: 'fact',
+    note: '2026 年 9 月宣布启动，已宣布尽快交付防护方能力',
+  },
+
+  // ── 延续性参考（2025 年官宣，2026 年仍在深化）──
+  {
+    id: 'walmart',
+    customer: 'Walmart',
+    industry: '零售',
+    scenario: '库存自动补货（AIP 部署在 2026 年仍持续深化扩展）',
+    source: 'Palantir 官方公布（2025 年官宣）',
+    sourceDate: '2025',
+    group: 'ongoing',
+    fidelity: 'fact',
+    note: '非 2026 年新发布，作为规模化落地的延续性参考',
+  },
+  {
+    id: 'gm',
+    customer: 'General Motors（通用汽车）',
+    industry: '汽车制造',
+    scenario: '跨 30+ 业务单元部署 AIP（2026 年仍在深化扩展）',
+    source: 'Palantir 官方公布（2025 年官宣）',
+    sourceDate: '2025',
+    group: 'ongoing',
+    fidelity: 'fact',
+    note: '非 2026 年新发布，作为规模化落地的延续性参考',
+  },
+];
+
+export const groupLabels: Record<LibraryEntry['group'], string> = {
+  'aipcon-11': 'AIPCon 11（2026-09-10）',
+  'aipcon-10': 'AIPCon 10（2026-06-04）',
+  'blog-2026': '官方博客真实案例（2026）',
+  partnership: '合作项目',
+  ongoing: '延续性参考（2025 年官宣）',
+};
+
+export const fidelityLabels: Record<LibraryEntry['fidelity'], string> = {
+  fact: '官方事实',
+  'official-claim': '官方声称',
+  simulated: '模拟数据',
+};
+
+// Product-capability demonstration from the same blog, without a named customer.
+export const productDemos = [
+  {
+    id: 'doc-graph-demo',
+    title: '4000 万份文档结构化为代理式知识图谱',
+    metrics: '9.29 亿条边 · 10.8 分钟完成 · 600 道保留问题答对率 83.2%',
+    source: 'Palantir 官方博客《Connecting Agents to Decisions》(2026)',
+    note: '产品能力演示，未指明具体客户名称；不是客户案例',
+    interactiveSlug: 'document-graph',
+  },
+];
+
+// Fictional example explicitly excluded from the customer list.
+export const fictionalExamples = ['Onyx Incorporated'];

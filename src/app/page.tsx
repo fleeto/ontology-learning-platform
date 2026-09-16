@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import OntologyJourney from '@/components/OntologyJourney';
 import { objectTypes, linkTypes, actionTypes, interfaceTypes } from '@/data/ontology-model';
+import { getLinkPath, getPointOnPath, findShortestPath, getDefaultPosition } from '@/lib/graph-geometry';
 
 // Layout positions for the ontology graph
 const nodePositions: Record<string, { x: number; y: number }> = {
@@ -50,25 +51,15 @@ export default function OntologyExplorerPage() {
   }, [selectedNode]);
 
   // BFS path finding
-  const findPath = useCallback((from: string, to: string): string[] => {
-    const queue: string[][] = [[from]];
-    const visited = new Set([from]);
-    while (queue.length > 0) {
-      const path = queue.shift()!;
-      const current = path[path.length - 1];
-      if (current === to) return path;
-      for (const link of linkTypes) {
-        let next: string | null = null;
-        if (link.sourceObject === current) next = link.targetObject;
-        else if (link.targetObject === current) next = link.sourceObject;
-        if (next && !visited.has(next)) {
-          visited.add(next);
-          queue.push([...path, next]);
-        }
-      }
-    }
-    return [];
-  }, []);
+  const findPath = useCallback(
+    (from: string, to: string): string[] =>
+      findShortestPath(
+        linkTypes.map(l => ({ source: l.sourceObject, target: l.targetObject })),
+        from,
+        to,
+      ),
+    [],
+  );
 
   // Animate particles along links
   useEffect(() => {
@@ -115,32 +106,15 @@ export default function OntologyExplorerPage() {
   }, [highlightedPath]);
 
   const getNodePosition = useCallback((objectId: string) => {
-    return nodePositions[objectId] || { x: 400, y: 300 };
+    return nodePositions[objectId] || getDefaultPosition(objectId);
   }, []);
 
-  const getLinkPath = useCallback((link: typeof linkTypes[0]) => {
-    const source = getNodePosition(link.sourceObject);
-    const target = getNodePosition(link.targetObject);
-    const midX = (source.x + target.x) / 2;
-    const midY = (source.y + target.y) / 2;
-    const dx = target.x - source.x;
-    const dy = target.y - source.y;
-    const len = Math.sqrt(dx * dx + dy * dy) || 1;
-    const offset = 25;
-    const cx = midX + (-dy / len) * offset;
-    const cy = midY + (dx / len) * offset;
-    return { path: `M ${source.x} ${source.y} Q ${cx} ${cy} ${target.x} ${target.y}`, cx, cy };
+  const getCaseLinkPath = useCallback((link: typeof linkTypes[0]) => {
+    return getLinkPath(
+      getNodePosition(link.sourceObject),
+      getNodePosition(link.targetObject),
+    );
   }, [getNodePosition]);
-
-  const getPointOnPath = useCallback((path: string, progress: number) => {
-    const parts = path.match(/M ([\d.]+) ([\d.]+) Q ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)/);
-    if (!parts) return { x: 0, y: 0 };
-    const [, x1, y1, cx, cy, x2, y2] = parts.map(Number);
-    const t = progress;
-    const x = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * cx + t * t * x2;
-    const y = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cy + t * t * y2;
-    return { x, y };
-  }, []);
 
   const handleFindPath = () => {
     if (searchFrom && searchTo) {
@@ -240,7 +214,7 @@ export default function OntologyExplorerPage() {
 
               {/* Link edges */}
               {linkTypes.map((link, i) => {
-                const { path } = getLinkPath(link);
+                const { path } = getCaseLinkPath(link);
                 const isHighlighted = (selectedNode && (link.sourceObject === selectedNode || link.targetObject === selectedNode)) || (journeyNodes.includes(link.sourceObject) && journeyNodes.includes(link.targetObject));
                 const isInPath = highlightedPath.length > 0 && (
                   highlightedPath.includes(link.sourceObject) && highlightedPath.includes(link.targetObject) &&
@@ -263,8 +237,8 @@ export default function OntologyExplorerPage() {
                     />
                     {/* Cardinality label */}
                     <text
-                      x={getLinkPath(link).cx}
-                      y={getLinkPath(link).cy - 8}
+                      x={getCaseLinkPath(link).cx}
+                      y={getCaseLinkPath(link).cy - 8}
                       fontSize="8"
                       fill={isInPath ? '#34d399' : '#6b7280'}
                       textAnchor="middle"
@@ -280,7 +254,7 @@ export default function OntologyExplorerPage() {
               {particles.map(particle => {
                 const link = linkTypes[particle.linkIndex];
                 if (!link) return null;
-                const { path } = getLinkPath(link);
+                const { path } = getCaseLinkPath(link);
                 const point = getPointOnPath(path, particle.progress);
                 return (
                   <g key={particle.id}>

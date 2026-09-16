@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "verify:cases": "tsx scripts/verify-cases.ts",
+    "gen:cases": "tsx scripts/gen-case-library.ts"
   },
   "dependencies": {
     "next": "14.2.5",
@@ -29,6 +31,7 @@
     "postcss": "8.4.39",
     "autoprefixer": "10.4.19",
     "eslint": "8.57.0",
-    "eslint-config-next": "14.2.5"
+    "eslint-config-next": "14.2.5",
+    "tsx": "4.19.2"
   }
 }
